@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" name="sflowparser" packages="">
+    <properties>
+        <property name="logMsgPattern">%d %p %c{1.} [%t] %m%n</property>
+        <property name="logDir">logs</property><!-- ${sys:logDir} -->
+        <property name="isThreadContextMapInheritable">true</property>
+    </properties>
+    
+	<Appenders>
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+		<RollingFile name="ROLLING_FILE" fileName="logs/sflowparser.log"
+			filePattern="logs/$${date:yyyy-MM}/sflow-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="250 MB" />
+			</Policies>
+		</RollingFile>
+		
+		<Socket name="LOGSTASH_SOCKET" host="10.10.3.196" port="9500"
+			immediateFail="false" immediateFlush="false">
+			<MarkerFilter marker="LOGSTASH_MARKER" onMatch="ACCEPT" onMismatch="DENY"/>		
+      			<SerializedLayout />
+   		</Socket> 
+	</Appenders>
+	
+	<Loggers>
+		<Root level="info">
+			<AppenderRef ref="ROLLING_FILE" />
+			<AppenderRef ref="LOGSTASH_SOCKET" />
+<!-- 			<AppenderRef ref="STDOUT" />		
+ -->		</Root>
+	</Loggers>
+</Configuration>
