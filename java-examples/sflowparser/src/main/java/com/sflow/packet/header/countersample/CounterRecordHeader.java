@@ -58,6 +58,7 @@ public class CounterRecordHeader {
      private OpenFlowPortCounterHeader  openFlowPortCounter;
      private PortNameCounterHeader      portNameCounter;
      private OvsDataPathCounterHeader   ovsDataPathCounter;
+     private AppResourcesCounterHeader  appResourcesCounter;
           
      public CounterRecordHeader() {
      }
@@ -150,6 +151,10 @@ public class CounterRecordHeader {
           this.ovsDataPathCounter = ovsDataPathCounter;
      }
 
+     public void setAppResourcesCounter(AppResourcesCounterHeader appResourcesCounter) {
+          this.appResourcesCounter = appResourcesCounter;
+     }
+
      public static CounterRecordHeader parse(byte[] data, int offset) throws HeaderParseException {
           try {
                if (data.length - offset < 8) throw new HeaderParseException("Data array too short.");
@@ -191,6 +196,9 @@ public class CounterRecordHeader {
                } else if (crd.getCounterDataFormat() == OVSDP_SFLOWv5) {
                     OvsDataPathCounterHeader ovs = OvsDataPathCounterHeader.parse(subData);
                     crd.setOvsDataPathCounter(ovs);
+               } else if (crd.getCounterDataFormat() == APPRESOURCES_SFLOWv5) {
+		    AppResourcesCounterHeader arc = AppResourcesCounterHeader.parse(subData);
+		    crd.setAppResourcesCounter(arc);
                } else {
                     System.err.println("Counter data format not yet supported: " + crd.getCounterDataFormat());
                }
@@ -343,6 +351,8 @@ public class CounterRecordHeader {
           } else if(this.getCounterDataFormat() == CounterRecordHeader.PORTNAME_SFLOWv5){
                sb.append(processorCounter);
           } else if(this.getCounterDataFormat() == CounterRecordHeader.OVSDP_SFLOWv5){
+               sb.append(ovsDataPathCounter);
+          } else if(this.getCounterDataFormat() == CounterRecordHeader.APPRESOURCES_SFLOWv5){
                sb.append(ovsDataPathCounter);
           } else{
                sb.append("unsupported CounterRecordData format");

@@ -19,7 +19,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<start-class>com.sflow.main.SFlowApplication</start-class>
+		<start-class>com.sflow.collector.SFlowApplication</start-class>
 	</properties>
 
 

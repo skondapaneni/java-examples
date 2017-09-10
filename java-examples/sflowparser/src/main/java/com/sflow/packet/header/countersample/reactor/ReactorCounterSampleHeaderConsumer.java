@@ -20,7 +20,7 @@ Consumer<Event<CounterSampleHeader>> {
 	EventBus 				counterRecordBus;
 
 	@Autowired
-//	CounterEventListener	counterEventListener;
+	CounterEventListener	                counterEventListener;
 
 	public static String counterSampleHeaderEvent = new String("sflowDatagram.counterSampleHeaderEvent");
 
@@ -32,7 +32,7 @@ Consumer<Event<CounterSampleHeader>> {
 
 	public void accept(Event<CounterSampleHeader> event) {
 		CounterSampleHeader csh = (CounterSampleHeader)event.getData();	
-//		counterEventListener.addCounterRecords(csh);
+		counterEventListener.addCounterRecords(csh);
 	}
 
 }

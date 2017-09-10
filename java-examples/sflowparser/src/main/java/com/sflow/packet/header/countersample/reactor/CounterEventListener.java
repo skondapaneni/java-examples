@@ -22,6 +22,7 @@ import com.sflow.packet.header.reactor.ExpandedCounterSampleHeader;
 import com.sflow.packet.reactor.SFlowHeader;
 import com.sflow.records.domain.IfCounterData;
 import com.sflow.records.domain.Processor;
+import com.sflow.records.domain.AppResources;
 import com.sflow.util.Address;
 import com.sflow.util.HeaderException;
 import com.sflow.util.Utility;
@@ -251,7 +252,10 @@ public class CounterEventListener
 		public IfCounterData getIfd() {
 			return ifdLast;
 		}
-		
+	
+		public void handleNewCounterRecord(IfCounterData data) {
+			System.out.println("counter data " + data);
+		}	
 			
 		public synchronized void setIfd(IfCounterData ifd) {
 			IfCounterData last = null;
@@ -265,6 +269,7 @@ public class CounterEventListener
 					computeUtilization(this, ifd, false);
 				}
 //				counterRecordHandler.handleNewCounterRecord(ifd);
+				handleNewCounterRecord(ifd);
 				return;
 			} else if (last.getSampleSequenceNumber() > ifd.getSampleSequenceNumber() ||
 					last.getSysUptime() > ifd.getSysUptime()) {
@@ -277,6 +282,7 @@ public class CounterEventListener
 			prev = ifd;
 			computeUtilization(this, ifd, false);	
 //			counterRecordHandler.handleNewCounterRecord(ifd);
+			handleNewCounterRecord(ifd);
 		}
 		
 	}
@@ -357,7 +363,21 @@ public class CounterEventListener
 			record.setBucket(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 		}
 	}
-	
+
+	public void addSflowHeaderToRecord(AppResources record, 
+			SFlowHeader sflowHeader) throws UtilityException, HeaderException {
+
+		if (record != null) {
+			record.setIpVersionAgent((int)sflowHeader.getIPVersionAgent());				
+			record.setIpAddress(sflowHeader.getAddressAgent().toString());
+			record.setSubAgentID(sflowHeader.getSubAgentID());
+			record.setSampleSequenceNumber(sflowHeader.getSeqNumber());
+			record.setSysUptime(sflowHeader.getSysUptime());
+			record.setEventTime(sflowHeader.getTimestamp());
+			record.setBucket(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+		}
+	}
+
 	public void addCounterRecords(CounterSampleHeader counterHeader) {
 		SFlowHeader sflowHeader = counterHeader.getSflowHeader();
 		for (CounterRecordHeader crh : counterHeader.getCounterRecords()) {
@@ -406,7 +426,7 @@ public class CounterEventListener
 				}
 			} else if (crh.getCounterDataFormat() == CounterRecordHeader.PROCESSORCOUNTER_SFLOWv5) {
 				Processor record = new Processor();
-				if (record != null) { 
+				if (record != null) {
 					try {
 						addSflowHeaderToRecord(record, sflowHeader);	
 						record.setSourceIDType(expandedCounterHeader.getSourceIDType());
@@ -422,6 +442,24 @@ public class CounterEventListener
 					}
 					//batchP.saveRecord(record);
 					//taskExecutor.execute(new CounterRecordProcessor(record));
+				    System.out.println("processor record " + record);
+				}
+			} else if (crh.getCounterDataFormat() == CounterRecordHeader.APPRESOURCES_SFLOWv5) {
+				AppResources record = new AppResources();
+				if (record != null) { 
+					try {
+						addSflowHeaderToRecord(record, sflowHeader);	
+						record.setSourceIDType(expandedCounterHeader.getSourceIDType());
+						record.setSourceIDIndex(expandedCounterHeader.getSourceIDIndex());	
+						record.setSeqNumber(expandedCounterHeader.getSequenceNumber());
+					} catch (UtilityException ue)  {
+						
+					} catch (HeaderException he) {
+					
+					}
+					//batchP.saveRecord(record);
+					//taskExecutor.execute(new CounterRecordProcessor(record));
+				    System.out.println("processor record " + record);
 				}
 			}
 		}
