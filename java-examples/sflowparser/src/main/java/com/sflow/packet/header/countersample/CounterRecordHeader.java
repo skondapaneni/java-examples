@@ -154,6 +154,10 @@ public class CounterRecordHeader {
      public void setAppResourcesCounter(AppResourcesCounterHeader appResourcesCounter) {
           this.appResourcesCounter = appResourcesCounter;
      }
+     
+     public AppResourcesCounterHeader getAppResourcesCounter() {
+         return appResourcesCounter;
+     }
 
      public static CounterRecordHeader parse(byte[] data, int offset) throws HeaderParseException {
           try {

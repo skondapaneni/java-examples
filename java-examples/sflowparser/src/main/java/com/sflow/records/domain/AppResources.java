@@ -49,9 +49,6 @@ public class AppResources {
 	@JsonProperty("memMax")
 	private BigInteger memMax;
 	
-	@JsonProperty("freeMemory")
-	private BigInteger freeMemory;
-
 	@JsonProperty("fdOpen")
 	private long fdOpen;
 
@@ -142,6 +139,70 @@ public class AppResources {
 
 	public void setSeqNumber(long seqNumber) {
 		this.seqNumber = seqNumber;
+	}
+
+	public long getUserTime() {
+		return userTime;
+	}
+
+	public void setUserTime(long userTime) {
+		this.userTime = userTime;
+	}
+
+	public long getSystemTime() {
+		return systemTime;
+	}
+
+	public void setSystemTime(long systemTime) {
+		this.systemTime = systemTime;
+	}
+
+	public BigInteger getMemUsed() {
+		return memUsed;
+	}
+
+	public void setMemUsed(BigInteger memUsed) {
+		this.memUsed = memUsed;
+	}
+
+	public BigInteger getMemMax() {
+		return memMax;
+	}
+
+	public void setMemMax(BigInteger memMax) {
+		this.memMax = memMax;
+	}
+
+	public long getFdOpen() {
+		return fdOpen;
+	}
+
+	public void setFdOpen(long fdOpen) {
+		this.fdOpen = fdOpen;
+	}
+
+	public long getFdMax() {
+		return fdMax;
+	}
+
+	public void setFdMax(long fdMax) {
+		this.fdMax = fdMax;
+	}
+
+	public long getConnOpen() {
+		return connOpen;
+	}
+
+	public void setConnOpen(long connOpen) {
+		this.connOpen = connOpen;
+	}
+
+	public long getConnMax() {
+		return connMax;
+	}
+
+	public void setConnMax(long connMax) {
+		this.connMax = connMax;
 	}
 
 	@Override

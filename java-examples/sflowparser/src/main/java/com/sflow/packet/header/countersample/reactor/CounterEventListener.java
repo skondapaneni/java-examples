@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sflow.packet.header.countersample.CounterRecordHeader;
 import com.sflow.packet.header.countersample.GenericIfCounterHeader;
 import com.sflow.packet.header.reactor.CounterSampleHeader;
@@ -452,6 +453,16 @@ public class CounterEventListener
 						record.setSourceIDType(expandedCounterHeader.getSourceIDType());
 						record.setSourceIDIndex(expandedCounterHeader.getSourceIDIndex());	
 						record.setSeqNumber(expandedCounterHeader.getSequenceNumber());
+						
+						record.setUserTime(crh.getAppResourcesCounter().getUserTime());
+						record.setSystemTime(crh.getAppResourcesCounter().getSystemTime());
+						record.setMemUsed(crh.getAppResourcesCounter().getMemUsed());
+						record.setMemMax(crh.getAppResourcesCounter().getMemMax());
+						record.setFdOpen(crh.getAppResourcesCounter().getFdOpen());
+						record.setFdMax(crh.getAppResourcesCounter().getFdMax());
+						record.setConnOpen(crh.getAppResourcesCounter().getConnOpen());
+						record.setConnMax(crh.getAppResourcesCounter().getConnMax());
+
 					} catch (UtilityException ue)  {
 						
 					} catch (HeaderException he) {
