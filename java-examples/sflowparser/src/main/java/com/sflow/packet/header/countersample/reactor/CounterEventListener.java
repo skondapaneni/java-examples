@@ -382,6 +382,35 @@ public class CounterEventListener
 	public void addCounterRecords(CounterSampleHeader counterHeader) {
 		SFlowHeader sflowHeader = counterHeader.getSflowHeader();
 		for (CounterRecordHeader crh : counterHeader.getCounterRecords()) {
+			if (crh.getCounterDataFormat() == CounterRecordHeader.APPRESOURCES_SFLOWv5) {
+				AppResources record = new AppResources();
+				if (record != null) { 
+					try {
+						addSflowHeaderToRecord(record, sflowHeader);	
+						record.setSourceIDType(counterHeader.getSourceIDType());
+						record.setSourceIDIndex(counterHeader.getSourceIDIndex());
+						record.setSeqNumber(counterHeader.getSequenceNumber());
+
+						record.setUserTime(crh.getAppResourcesCounter().getUserTime());
+						record.setSystemTime(crh.getAppResourcesCounter().getSystemTime());
+						record.setMemUsed(crh.getAppResourcesCounter().getMemUsed());
+						record.setMemMax(crh.getAppResourcesCounter().getMemMax());
+						record.setFdOpen(crh.getAppResourcesCounter().getFdOpen());
+						record.setFdMax(crh.getAppResourcesCounter().getFdMax());
+						record.setConnOpen(crh.getAppResourcesCounter().getConnOpen());
+						record.setConnMax(crh.getAppResourcesCounter().getConnMax());
+
+					} catch (UtilityException ue)  {
+						
+					} catch (HeaderException he) {
+					
+					}
+					//batchP.saveRecord(record);
+					//taskExecutor.execute(new CounterRecordProcessor(record));
+				    System.out.println("appResources record " + record);
+				}
+			}
+
 			if (crh.getCounterDataFormat() != 1) {
 				continue;
 			}
@@ -470,7 +499,7 @@ public class CounterEventListener
 					}
 					//batchP.saveRecord(record);
 					//taskExecutor.execute(new CounterRecordProcessor(record));
-				    System.out.println("processor record " + record);
+				    System.out.println("appResources record " + record);
 				}
 			}
 		}

@@ -357,7 +357,7 @@ public class CounterRecordHeader {
           } else if(this.getCounterDataFormat() == CounterRecordHeader.OVSDP_SFLOWv5){
                sb.append(ovsDataPathCounter);
           } else if(this.getCounterDataFormat() == CounterRecordHeader.APPRESOURCES_SFLOWv5){
-               sb.append(ovsDataPathCounter);
+               sb.append(appResourcesCounter);
           } else{
                sb.append("unsupported CounterRecordData format");
           }
