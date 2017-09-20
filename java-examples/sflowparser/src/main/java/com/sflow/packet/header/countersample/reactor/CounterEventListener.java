@@ -13,6 +13,9 @@ import javax.annotation.PostConstruct;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -35,6 +38,7 @@ public class CounterEventListener
 		
 	@SuppressWarnings("unused")
 	private static final Logger log = LogManager.getLogger(CounterEventListener.class.getName());	
+        private static final Marker logstash = MarkerManager.getMarker("LOGSTASH_MARKER");
 	
 	// Keep track of the last IfCounterData Record per interface..
 	private HashMap<ByteBuffer, IfCounterDataRecord>  ifCounterDataMap = new HashMap<ByteBuffer, IfCounterDataRecord>();
@@ -255,7 +259,8 @@ public class CounterEventListener
 		}
 	
 		public void handleNewCounterRecord(IfCounterData data) {
-			System.out.println("counter data " + data);
+			//System.out.println("counter data " + data);
+			CounterEventListener.log.info(CounterEventListener.logstash, data);
 		}	
 			
 		public synchronized void setIfd(IfCounterData ifd) {
@@ -407,7 +412,8 @@ public class CounterEventListener
 					}
 					//batchP.saveRecord(record);
 					//taskExecutor.execute(new CounterRecordProcessor(record));
-				    System.out.println("appResources record " + record);
+				    //System.out.println("appResources record " + record);
+			            CounterEventListener.log.info(CounterEventListener.logstash, record);
 				}
 			}
 
@@ -472,7 +478,8 @@ public class CounterEventListener
 					}
 					//batchP.saveRecord(record);
 					//taskExecutor.execute(new CounterRecordProcessor(record));
-				    System.out.println("processor record " + record);
+				    //System.out.println("processor record " + record);
+				    CounterEventListener.log.info(CounterEventListener.logstash, record);
 				}
 			} else if (crh.getCounterDataFormat() == CounterRecordHeader.APPRESOURCES_SFLOWv5) {
 				AppResources record = new AppResources();

@@ -10,6 +10,19 @@
 		<Console name="STDOUT" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
 		</Console>
+		<Syslog name="syslog" host="localhost" port="514" protocol="UDP" charset="ISO-8859-1">
+		   <PatternLayout
+    		   pattern="&lt;1&gt;%d{MMM dd HH:mm:ss} ${hostName} appName: {
+      		      &quot;host&quot;:&quot;${hostName}&quot;,
+      		      &quot;thread&quot;:&quot;%t&quot;,
+      		      &quot;level&quot;:&quot;%p&quot;,
+      		      &quot;logger&quot;:&quot;%c{1}&quot;,
+      		      &quot;line&quot;:%L,
+      		      &quot;message&quot;:&quot;%enc{%m}&quot;,
+      		      &quot;exception&quot;:&quot;%exception&quot;
+      		      }%n"
+  		   />
+        	</Syslog>
 		<RollingFile name="ROLLING_FILE" fileName="logs/sflowparser.log"
 			filePattern="logs/$${date:yyyy-MM}/sflow-%d{MM-dd-yyyy}-%i.log.gz">
 			<PatternLayout>
@@ -21,10 +34,13 @@
 			</Policies>
 		</RollingFile>
 		
-		<Socket name="LOGSTASH_SOCKET" host="10.10.3.196" port="9500"
+		<Socket name="LOGSTASH_SOCKET" host="bhima" port="5051"
 			immediateFail="false" immediateFlush="false">
+                        <JsonLayout compact="true" eventEol="true" />
 			<MarkerFilter marker="LOGSTASH_MARKER" onMatch="ACCEPT" onMismatch="DENY"/>		
+<!--
       			<SerializedLayout />
+-->
    		</Socket> 
 	</Appenders>
 	
@@ -32,6 +48,7 @@
 		<Root level="info">
 			<AppenderRef ref="ROLLING_FILE" />
 			<AppenderRef ref="LOGSTASH_SOCKET" />
+			<AppenderRef ref="syslog" />
 <!-- 			<AppenderRef ref="STDOUT" />		
  -->		</Root>
 	</Loggers>
