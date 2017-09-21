@@ -5,56 +5,51 @@ import org.springframework.stereotype.Service;
 
 import reactor.bus.EventBus;
 
-
 @Service
-public class SFlowCollector      
-{
-                         
-     @Autowired
-     EventBus                           eventBus;
-     
-     @Autowired
-     EventBus                           rawPacketRecordBus;
-     
-     @Autowired
-     EventBus                           counterRecordBus;
+public class SFlowCollector {
 
-     
-    // @Value("${appx.sflow.port}")
-     int                                port=6343;
-     
-     
-     public void startCollector() 
-     {
-          Thread t = new Thread(new SFlowUdpListener(eventBus));
-          t.start();
-     }
-     
-     public EventBus getEventBus() {
-          return eventBus;
-     }
+	@Autowired
+	EventBus eventBus;
 
-     public void setEventBus(EventBus eventBus) {
-          this.eventBus = eventBus;
-     }
+	@Autowired
+	EventBus rawPacketRecordBus;
 
-     public EventBus getRawPacketRecordBus() {
-          return rawPacketRecordBus;
-     }
+	@Autowired
+	EventBus counterRecordBus;
 
-     public void setRawPacketRecordBus(EventBus rawPacketRecordBus) {
-          this.rawPacketRecordBus = rawPacketRecordBus;
-     }
+	// @Value("${sflow.port}")
+	int port = 6343;
 
-     public EventBus getCounterRecordBus() {
-          return counterRecordBus;
-     }
+	public void startCollector() {
+		Thread t = new Thread(new SFlowUdpListener(eventBus));
+		t.start();
+	}
 
-     public void setCounterRecordBus(EventBus counterRecordBus) {
-          this.counterRecordBus = counterRecordBus;
-     }
+	public EventBus getEventBus() {
+		return eventBus;
+	}
 
-     public SFlowCollector() {
-     }
-     
+	public void setEventBus(EventBus eventBus) {
+		this.eventBus = eventBus;
+	}
+
+	public EventBus getRawPacketRecordBus() {
+		return rawPacketRecordBus;
+	}
+
+	public void setRawPacketRecordBus(EventBus rawPacketRecordBus) {
+		this.rawPacketRecordBus = rawPacketRecordBus;
+	}
+
+	public EventBus getCounterRecordBus() {
+		return counterRecordBus;
+	}
+
+	public void setCounterRecordBus(EventBus counterRecordBus) {
+		this.counterRecordBus = counterRecordBus;
+	}
+
+	public SFlowCollector() {
+	}
+
 }

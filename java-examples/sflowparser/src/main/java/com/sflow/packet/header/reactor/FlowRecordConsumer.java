@@ -2,7 +2,6 @@ package com.sflow.packet.header.reactor;
 
 import javax.annotation.PostConstruct;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,38 +15,35 @@ import com.sflow.packet.reactor.SFlowHeader;
 import com.sflow.util.HeaderParseException;
 
 @Service
-public class FlowRecordConsumer implements  
-	Consumer<Event<FlowRecordConsumer.FlowEventData>> {
+public class FlowRecordConsumer implements Consumer<Event<FlowRecordConsumer.FlowEventData>> {
 
 	@Autowired
-	SFlowCollector 	collector;
-	
+	SFlowCollector collector;
+
 	@Autowired
-	EventBus 		flowEventBus;
-		
+	EventBus flowEventBus;
+
 	public static String flowEvent = new String("sflowDatagram.flowEvent");
-	
-	
+
 	public final static class FlowEventData {
 		SFlowHeader header;
 		long format;
 		byte[] data;
 		long len;
 		int offset;
-		
-		public FlowEventData(SFlowHeader header, long format, 
-				byte[] data, int offset, long sampleLength) {
+
+		public FlowEventData(SFlowHeader header, long format, byte[] data, int offset, long sampleLength) {
 			this.data = data;
 			this.header = header;
 			this.offset = offset;
 			this.format = format;
 			this.len = sampleLength;
 		}
-		
+
 		public byte[] getData() {
 			return data;
 		}
-		
+
 		public SFlowHeader getSFlowHeader() {
 			return header;
 		}
@@ -76,7 +72,7 @@ public class FlowRecordConsumer implements
 			this.format = format;
 		}
 	};
-	
+
 	@PostConstruct
 	public void init() {
 		ObjectSelector<String, String> selector = new ObjectSelector<String, String>(flowEvent);
@@ -87,15 +83,14 @@ public class FlowRecordConsumer implements
 
 		try {
 
-			SampleDataHeader sdh = SampleDataHeader.parse(event.getData().getFormat(),
-					event.getData().data, event.getData().getOffset(),
-					event.getData().getLen(), event.getData().header);
+			SampleDataHeader sdh = SampleDataHeader.parse(event.getData().getFormat(), event.getData().data,
+					event.getData().getOffset(), event.getData().getLen(), event.getData().header);
 			event.getData().header.addSampleDataHeader(sdh);
-			
+
 		} catch (HeaderParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	catch (Exception ex)	 {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}

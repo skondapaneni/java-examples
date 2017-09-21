@@ -174,7 +174,8 @@ public class CounterRecordHeader {
                System.arraycopy(data, 8+offset, subData, 0, (int) crd.getCounterDataLength());
 
                if (crd.getCounterDataFormat() == GENERICCOUNTER_SFLOWv5) {
-                    GenericIfCounterHeader gic = GenericIfCounterHeader.parse(subData);
+                    GenericIfCounterHeader gic = GenericIfCounterHeader.parse(data, offset+8, 
+                    		(int) crd.getCounterDataLength());
                     crd.setGenericCounterHeader(gic);
                } else if (crd.getCounterDataFormat() == ETHERNETCOUNTER_SFLOWv5) {
                     EthernetCounterHeader eic = EthernetCounterHeader.parse(subData);

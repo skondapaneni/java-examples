@@ -207,53 +207,55 @@ public class GenericIfCounterHeader {
           return counterData;
      }
 
-     public static GenericIfCounterHeader parse(byte[] data) throws HeaderParseException {
+     public static GenericIfCounterHeader parse(byte[] data, int offset, 
+    		 int datalen) throws HeaderParseException {
           try {
-               if (data.length < 88) throw new HeaderParseException("Data array too short.");
+               if (data.length - offset < 88 ||
+            		   datalen < 88) throw new HeaderParseException("Data array too short.");
                GenericIfCounterHeader gic = new GenericIfCounterHeader();
                // interface index
-               gic.setIfIndex(Utility.fourBytesToLong(data, 0));
+               gic.setIfIndex(Utility.fourBytesToLong(data, 0+offset));
                // interface type
-               gic.setIfType(Utility.fourBytesToLong(data, 4));
+               gic.setIfType(Utility.fourBytesToLong(data, 4+offset));
                // interface speed
-               gic.setIfSpeed(Utility.eightBytesToBigInteger(data, 8));
+               gic.setIfSpeed(Utility.eightBytesToBigInteger(data, 8+offset));
                // interface direction
-               gic.setIfDirection(Utility.fourBytesToLong(data, 16));
+               gic.setIfDirection(Utility.fourBytesToLong(data, 16+offset));
                // interface status
-               gic.setIfStatus(Utility.fourBytesToLong(data, 20));
+               gic.setIfStatus(Utility.fourBytesToLong(data, 20+offset));
                // interface input octets -
-               gic.setIfInOctets(Utility.eightBytesToBigInteger(data, 24));
+               gic.setIfInOctets(Utility.eightBytesToBigInteger(data, 24+offset));
                // interface input unicast packets
-               gic.setIfInUcastPkts(Utility.fourBytesToLong(data, 32));
+               gic.setIfInUcastPkts(Utility.fourBytesToLong(data, 32+offset));
                // interface input multicast packets
-               gic.setIfInMulticastPkts(Utility.fourBytesToLong(data, 36));
+               gic.setIfInMulticastPkts(Utility.fourBytesToLong(data, 36+offset));
                // interface input broadcast packets
-               gic.setIfInBroadcastPkts(Utility.fourBytesToLong(data, 40));
+               gic.setIfInBroadcastPkts(Utility.fourBytesToLong(data, 40+offset));
                // interface input discards
-               gic.setIfInDiscards(Utility.fourBytesToLong(data, 44));
+               gic.setIfInDiscards(Utility.fourBytesToLong(data, 44+offset));
                // interface input errors
-               gic.setIfInErrors(Utility.fourBytesToLong(data, 48));
+               gic.setIfInErrors(Utility.fourBytesToLong(data, 48+offset));
                // interface input unknown protocols
-               gic.setIfInUnknownProtos(Utility.fourBytesToLong(data, 52));
+               gic.setIfInUnknownProtos(Utility.fourBytesToLong(data, 52+offset));
                // interface output octets
-               gic.setIfOutOctets(Utility.eightBytesToBigInteger(data, 56));
+               gic.setIfOutOctets(Utility.eightBytesToBigInteger(data, 56+offset));
                // interface output unicast packets
-               gic.setIfOutUcastPkts(Utility.fourBytesToLong(data, 64));
+               gic.setIfOutUcastPkts(Utility.fourBytesToLong(data, 64+offset));
                // interface output multicast packets
-               gic.setIfOutMulticastPkts(Utility.fourBytesToLong(data, 68));
+               gic.setIfOutMulticastPkts(Utility.fourBytesToLong(data, 68+offset));
                // interface output broadcast packets
-               gic.setIfOutBroadcastPkts(Utility.fourBytesToLong(data, 72));
+               gic.setIfOutBroadcastPkts(Utility.fourBytesToLong(data, 72+offset));
                // interface output discards
-               gic.setIfOutDiscards(Utility.fourBytesToLong(data, 76));
+               gic.setIfOutDiscards(Utility.fourBytesToLong(data, 76+offset));
                // interface output errors
-               gic.setIfOutErrors(Utility.fourBytesToLong(data, 80));
+               gic.setIfOutErrors(Utility.fourBytesToLong(data, 80+offset));
                // interface promiscuous mode
-               gic.setIfPromiscuousMode(Utility.fourBytesToLong(data, 84));
+               gic.setIfPromiscuousMode(Utility.fourBytesToLong(data, 84+offset));
 
-               if (data.length > 88) {
+               if (data.length - offset > 88 && datalen > 88) {
                     // counter data
-                    byte[] subData = new byte[data.length - 88]; 
-                    System.arraycopy(data, 88, subData, 0, data.length - 88);
+                    byte[] subData = new byte[data.length - (88 + offset)]; 
+                    System.arraycopy(data, offset+88, subData, 0, data.length - (88 +offset));
                     CounterData cd = CounterData.parse(subData);
                     gic.setCounterData(cd);
                }

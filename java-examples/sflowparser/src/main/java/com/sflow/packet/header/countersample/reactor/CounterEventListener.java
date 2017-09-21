@@ -13,8 +13,6 @@ import javax.annotation.PostConstruct;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
 
 import org.springframework.stereotype.Component;
 
@@ -28,6 +26,7 @@ import com.sflow.records.domain.IfCounterData;
 import com.sflow.records.domain.Processor;
 import com.sflow.records.domain.AppResources;
 import com.sflow.util.Address;
+import com.sflow.util.LoggerDefaults;
 import com.sflow.util.HeaderException;
 import com.sflow.util.Utility;
 import com.sflow.util.UtilityException;
@@ -38,8 +37,7 @@ public class CounterEventListener
 		
 	@SuppressWarnings("unused")
 	private static final Logger log = LogManager.getLogger(CounterEventListener.class.getName());	
-        private static final Marker logstash = MarkerManager.getMarker("LOGSTASH_MARKER");
-	
+
 	// Keep track of the last IfCounterData Record per interface..
 	private HashMap<ByteBuffer, IfCounterDataRecord>  ifCounterDataMap = new HashMap<ByteBuffer, IfCounterDataRecord>();
 		
@@ -260,7 +258,7 @@ public class CounterEventListener
 	
 		public void handleNewCounterRecord(IfCounterData data) {
 			//System.out.println("counter data " + data);
-			CounterEventListener.log.info(CounterEventListener.logstash, data);
+			CounterEventListener.log.info(LoggerDefaults.defaultMarker, data);
 		}	
 			
 		public synchronized void setIfd(IfCounterData ifd) {
@@ -410,10 +408,11 @@ public class CounterEventListener
 					} catch (HeaderException he) {
 					
 					}
+					
 					//batchP.saveRecord(record);
 					//taskExecutor.execute(new CounterRecordProcessor(record));
 				    //System.out.println("appResources record " + record);
-			            CounterEventListener.log.info(CounterEventListener.logstash, record);
+			        CounterEventListener.log.info(LoggerDefaults.defaultMarker, record);
 				}
 			}
 
@@ -479,7 +478,7 @@ public class CounterEventListener
 					//batchP.saveRecord(record);
 					//taskExecutor.execute(new CounterRecordProcessor(record));
 				    //System.out.println("processor record " + record);
-				    CounterEventListener.log.info(CounterEventListener.logstash, record);
+				    CounterEventListener.log.info(LoggerDefaults.defaultMarker, record);
 				}
 			} else if (crh.getCounterDataFormat() == CounterRecordHeader.APPRESOURCES_SFLOWv5) {
 				AppResources record = new AppResources();
